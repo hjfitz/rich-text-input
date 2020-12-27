@@ -29811,12 +29811,16 @@ function getSelectedIndexes(el) {
 
   var _selection$getRangeAt = selection.getRangeAt(0),
       startContainer = _selection$getRangeAt.startContainer,
-      endContainer = _selection$getRangeAt.endContainer;
+      endContainer = _selection$getRangeAt.endContainer; // unfurl inner spans as start/end containers point to text nodes
 
-  var start = _toConsumableArray(el.childNodes).indexOf(startContainer);
 
-  var end = _toConsumableArray(el.childNodes).indexOf(endContainer);
+  var children = _toConsumableArray(el.childNodes).map(function (el) {
+    if (el.hasChildNodes()) return _toConsumableArray(el.childNodes);
+    return el;
+  }).flat();
 
+  var start = children.indexOf(startContainer);
+  var end = children.indexOf(endContainer);
   return {
     start: start,
     end: end
@@ -29838,7 +29842,8 @@ function getCaretPos(el) {
 
 function setCaretPos(el, idx) {
   el.focus();
-  document.getSelection().collapse(el, idx);
+  var sel = document.getSelection();
+  sel.collapse(el, idx);
 }
 
 function parseNodesToDOMTreeString(nodes) {
@@ -29847,9 +29852,10 @@ function parseNodesToDOMTreeString(nodes) {
 
     var char = cur.char,
         modifiers = cur.modifiers; // if array tail's tail's char is a match to the current char, add
+    // todo: broken
 
     var prevBlock = (_acc = acc === null || acc === void 0 ? void 0 : acc[acc.length - 1]) !== null && _acc !== void 0 ? _acc : [];
-    var prevState = prevBlock === null || prevBlock === void 0 ? void 0 : prevBlock.state;
+    var prevState = prevBlock === null || prevBlock === void 0 ? void 0 : prevBlock.state; //modifiers
 
     if (JSON.stringify(prevState) === JSON.stringify(modifiers)) {
       prevBlock.chars.push(char);
@@ -29860,6 +29866,9 @@ function parseNodesToDOMTreeString(nodes) {
       });
     }
 
+    console.log({
+      acc: acc
+    });
     return acc;
   }, []).map(function (set) {
     var chars = set.chars.join('');
@@ -30011,11 +30020,12 @@ function App() {
     if (type === 'Range') {
       var _getSelectedIndexes = (0, _util.getSelectedIndexes)(editor.current),
           start = _getSelectedIndexes.start,
-          end = _getSelectedIndexes.end;
+          end = _getSelectedIndexes.end; // stretch aka where the splice stretches to from start
 
+
+      var stretch = end - start + 1;
       setNodes(function (nodes) {
-        nodes.splice(start, end - start + 1); //document.getSelection().removeAllRanges()
-
+        nodes.splice(start, stretch);
         return _toConsumableArray(nodes);
       });
     }
@@ -30066,7 +30076,10 @@ function App() {
 
   (0, _react.useEffect)(function () {
     if (!nodes.length) return;
-    var pos = (0, _util.getCaretPos)(editor.current);
+    var pos = (0, _util.getCaretPos)(editor.current); // hack for selecting and deleting
+
+    if (pos === nodes.length) return (0, _util.setCaretPos)(editor.current, pos); // don't overflow!
+
     if (pos >= nodes.length) return;
     var newPos = pos + 1;
     (0, _util.setCaretPos)(editor.current, newPos);
@@ -30080,9 +30093,11 @@ function App() {
     onClick: updateModifiersPerCaret,
     contentEditable: true,
     suppressContentEditableWarning: true
-  }, (0, _util.parseNodesToDOMTreeString)(nodes)), debug && /*#__PURE__*/_react.default.createElement("div", {
+  }, (0, _util.parseNodesToDOMTreeString)(nodes)), debug && /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", {
+    className: "block h-12 mt-12 border-2 border-dashed"
+  }, JSON.stringify(pending)), /*#__PURE__*/_react.default.createElement("div", {
     className: "block h-24 mt-12 border-2 border-dashed"
-  }, JSON.stringify(nodes)));
+  }, JSON.stringify(nodes))));
 }
 
 (0, _reactDom.render)( /*#__PURE__*/_react.default.createElement(App, null), entry);
@@ -30114,7 +30129,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44073" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "33653" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -4,11 +4,16 @@ export function getSelectedIndexes(el) {
 	const selection = document.getSelection()
 	const {startContainer, endContainer} = selection.getRangeAt(0)
 
-	const start = [...el.childNodes].indexOf(startContainer)
-	const end = [...el.childNodes].indexOf(endContainer)
+	// unfurl inner spans as start/end containers point to text nodes
+	const children = [...el.childNodes].map(el => {
+		if (el.hasChildNodes()) return [...el.childNodes]
+		return el
+	}).flat()
+
+	const start = children.indexOf(startContainer)
+	const end = children.indexOf(endContainer)
 
 	return {start, end}
-
 }
 
 export function getCaretPos(el) {
@@ -23,7 +28,8 @@ export function getCaretPos(el) {
 
 export function setCaretPos(el, idx) {
 	el.focus()
-	document.getSelection().collapse(el, idx)
+	const sel = document.getSelection()
+	sel.collapse(el, idx)
 }
 
 export function parseNodesToDOMTreeString(nodes) {
@@ -31,8 +37,9 @@ export function parseNodesToDOMTreeString(nodes) {
 		const {char, modifiers} = cur
 		// if array tail's tail's char is a match to the current char, add
 		
+		// todo: broken
 		const prevBlock = acc?.[acc.length - 1] ?? []
-		const prevState = prevBlock?.state
+		const prevState = prevBlock?.state //modifiers
 
 		if (JSON.stringify(prevState) === JSON.stringify(modifiers)) {
 			prevBlock.chars.push(char)
@@ -40,6 +47,7 @@ export function parseNodesToDOMTreeString(nodes) {
 			acc.push({modifiers, chars: [char]})
 		}
 
+		console.log({acc})
 		return acc
 
 	}, []).map(set => {

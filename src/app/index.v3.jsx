@@ -42,9 +42,12 @@ function App() {
 
 		if (type === 'Range') {
 			const {start, end} = getSelectedIndexes(editor.current)
+
+			// stretch aka where the splice stretches to from start
+			const stretch = (end - start) + 1
+
 			setNodes(nodes => {
-				nodes.splice(start, (end - start+1))
-				//document.getSelection().removeAllRanges()
+				nodes.splice(start, stretch)
 				return [...nodes]
 			})
 		}
@@ -98,6 +101,10 @@ function App() {
 	useEffect(() => {
 		if (!nodes.length) return
 		const pos = getCaretPos(editor.current)
+		// hack for selecting and deleting
+		if (pos === nodes.length) return setCaretPos(editor.current, pos)
+
+		// don't overflow!
 		if (pos >= nodes.length) return
 		const newPos = pos + 1
 		setCaretPos(editor.current, newPos)
@@ -119,9 +126,14 @@ function App() {
 			</div>
 
 			{debug && (
-				<div className="block h-24 mt-12 border-2 border-dashed">
-					{JSON.stringify(nodes)}
-				</div>
+				<>
+					<div className="block h-12 mt-12 border-2 border-dashed">
+						{JSON.stringify(pending)}
+					</div>
+					<div className="block h-24 mt-12 border-2 border-dashed">
+						{JSON.stringify(nodes)}
+					</div>
+				</>
 			)}
 		</main>
 	)
