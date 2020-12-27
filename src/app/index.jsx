@@ -1,127 +1,145 @@
-import React, {useState, useRef, useContext, useEffect} from 'react'
+import React, {
+	useState, 
+	useRef,
+	useContext,
+	useEffect,
+	useCallback
+} from 'react'
+
 import {render} from 'react-dom'
+import { v4 as uuidv4 } from 'uuid'
 
 import {parseInput, inputTreeToDom} from './parse-input.jsx'
 
 const el = document.getElementById('react-root')
 
-const ModifierContext = React.createContext({
-	modifier: {bold: false, ital: false}, 
-	setModifier: () => {}
-})
-
-function EditorToolbar({children}) {
-	const [focused, setFocused] = useState(null)
-	const [modifier, setModifier] = useState({
-		bold: false,
-		ital: false
+function Editor() {
+	const [lines, setLines] = useState([])
+	const [modifier, setModifiers] = useState({ 
+		cur: {
+			bold: false, 
+			italic: false
+		},
+		prev: []
 	})
-	function changeState(ev) {}
+	function createEditor({bold, italic} = {bold: false, italic: false}) {
+		const id = uuidv4()
+		setLines(children => {
+			const newElements = [
+				...children,
+				<EditorInput
+					bold={bold}
+					tabIndex={children.length+1}
+					italic={italic}
+					key={id}
+					id={id}
+				/>
+			]
+			return newElements
+		})
+	}
+
 	useEffect(() => {
-		const keys = []
-		document.addEventListener('keydown', (ev) => {
-			ev.preventDefault()
-			if (ev.key === "Control") {
-				setFocused(document.activeElement)
-				document.activeElement.blur()
-			}
-
-			if (keys[keys.length - 1] !== ev.key) keys.push(ev.key)
-			if (keys.length === 2) {
-				if (keys[0] !== 'Control') return
-				// todo: unfuck code
-				if (keys[1] === 'b') {
-					setModifier(mod => {
-						return {
-							...mod,
-							bold: !mod.bold,
-						}
-					})
-				} else if (keys[1] === 'i') {
-					setModifier(mod => {
-						return {
-							...mod,
-							ital: !mod.ital,
-						}
-					})
-				}
-
-			}
-			if (keys.length === 3) keys.pop()
-		})
-		document.addEventListener('keyup', (ev) => {
-			if (ev.key === "Control") {
-				console.log('removing control madness')
-				setFocused(cur => {
-					cur.focus()
-					return null
-				})
-			}
-			keys.pop()
-		})
-			
-	}, [])
-	return (
-		<ModifierContext.Provider
-			value={{
-				modifier,
-				setModifier,
-			}}
-		>
-			<div>{JSON.stringify(modifier)}</div>
-			<main>{children}</main>
-		</ModifierContext.Provider>
-	)
-}
-
-function TextInput() {
-	const input = useRef(null)
-	const {modifier, setModifier} = useContext(ModifierContext)
-	const [inputChars, setInputChars] = useState([])
-
-	function doFocus() {
-		input.current.focus()
-	}
-
-	function doEdit(ev) {
-		ev.preventDefault()
-		console.log(ev.key)
-		const key = parseInput(ev.key, modifier)
-		if (ev.key === 'Backspace') {
-			setInputChars(allInputs => {
-				allInputs.splice(-1)
-				console.log(allInputs)
-				return [...allInputs]
+		// create editors based on changes to modifiers - new if bold or italic
+	
+		/*
+		 * todo: check if we're creating useless boxes
+		 * eg if we go bold and then remove bold, just remove the element
+		 *
+		 * NOTE: this is very broken... don't go bold and back a few times
+		 */
+		
+		const twoStatesAgo = modifier.prev?.[modifier.prev.length - 2] ?? {}
+		console.log(twoStatesAgo)
+		/*
+		if (JSON.stringify(modifier.cur) === JSON.stringify(twoStatesAgo)) {
+			console.log('attempting to remove last box')
+			setLines(children => {
+				console.log(children)
+				children.pop()
+				return [...children]
 			})
-			return
-		}
-		// hacky fix for checking for modifier changes
-		if (!key) return //input.current.blur()
-		setInputChars(allIn => [...allIn, key])
-	}
+			setModifiers(mods => {
+				const {prev, cur} = mods
+				prev.pop()
+				return {cur, prev, removed: true}
+			})
+		} else if (!modifier.removed) {*/
+			createEditor(modifier.cur)
+		//}
+	}, [modifier])
+
+	// handle modifiers
+	useEffect(() => {
+		document.addEventListener('keydown', (ev) => {
+			const {ctrlKey, key} = ev
+			
+			if (!ctrlKey) return
+			// we're modifying - kill normal browser behaviour
+			ev.preventDefault()
+
+			const symbol = {
+				b: 'bold',
+				i: 'italic',
+			}[key]
+
+			if (!symbol) return
+
+
+			setModifiers(mods => ({
+				cur: {...mods.cur, [symbol]: !mods.cur.[symbol]},
+				prev: [...mods.prev, mods.cur],
+				removed: false,
+			}))
+			 
+		}) // event listener end
+
+
+	}, [])
 
 	return (
-		<>
-			<h1>Input Test</h1>
-			<div 
-				ref={input}
-				tabIndex={0}
-				onClick={doFocus} 
-				onKeyDown={doEdit}
-				className="h-5 py-8 pt-4 m-4 border focus:ring-2 focus:ring-blue-600" 
-			>
-				<div className="active-field">{(inputTreeToDom(inputChars))}</div>
+		<main>
+			<div>
+				<p>Bold: {String(modifier.cur.bold)}</p>
+				<p>Italic: {String(modifier.cur.italic)}</p>
 			</div>
-		</>
+			<div className="text-editor">
+				{lines}
+			</div>
+		</main>
 	)
 }
 
-function App() {
+function EditorInput({bold, italic, id, tabIndex}) {
+	const input = useRef(null)
+	const [hasFocus, setFocus] = useState(false)
+
+	useEffect(() => {
+		if (input) input.current.focus()
+	}, [input])
+	
+	const giveFocus = () => setFocus(true)
+	const removeFocus = () => setFocus(false)
+
+
+	const classes = "inline h-5 py-8 pt-4  border focus:ring-2 focus:ring-blue-600".split(' ')
+
+	if (bold) classes.push('font-bold')
+	if (italic) classes.push('italic')
+
 	return (
-		<EditorToolbar>
-			<TextInput />
-		</EditorToolbar>
+		<div
+			ref={input}
+			data-guid={id}
+			tabIndex={tabIndex}
+			contentEditable={hasFocus}
+			onClick={giveFocus}
+			onFocus={giveFocus}
+			onBlur={removeFocus}
+			className={classes.join(' ')}
+		/>
 	)
 }
 
-render(<App />, el)
+render(<Editor />, el)
+//render(<App />, el)

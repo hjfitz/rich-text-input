@@ -31168,47 +31168,13 @@ video {
           animation: bounce 1s infinite;
 }
 
-.active-field div {
-  position: relative;
+.text-editor {
+  display: flex;
 }
 
-div:focus .active-field div:last-child:after {
-  content: "";
-  width: 1px;
-  height: 100%;
-  background-color: #000;
-  position: absolute;
-  display: inline-block;
-  -webkit-animation: cursorflash 1s infinite;
-          animation: cursorflash 1s infinite;
-}
-
-@-webkit-keyframes cursorflash {
-  0% {
-    opacity: 0;
-  }
-
-  49% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-@keyframes cursorflash {
-  0% {
-    opacity: 0;
-  }
-
-  49% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
+.text-editor div:last-child {
+  background-color: #f0f;
+  min-width: 1000px;
 }
 
 @media (min-width: 640px) {
