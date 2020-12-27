@@ -103,7 +103,7 @@ function Editor() {
 				<p>Bold: {String(modifier.cur.bold)}</p>
 				<p>Italic: {String(modifier.cur.italic)}</p>
 			</div>
-			<div className="text-editor">
+			<div contentEditable={true} className="flex text-editor">
 				{lines}
 			</div>
 		</main>
@@ -115,7 +115,13 @@ function EditorInput({bold, italic, id, tabIndex}) {
 	const [hasFocus, setFocus] = useState(false)
 
 	useEffect(() => {
-		if (input) input.current.focus()
+		if (input) {
+			console.log('focusing')
+			setTimeout(() => {
+
+			input.current.focus()
+			}, 0)
+		}
 	}, [input])
 	
 	const giveFocus = () => setFocus(true)
@@ -128,12 +134,12 @@ function EditorInput({bold, italic, id, tabIndex}) {
 	if (italic) classes.push('italic')
 
 	return (
-		<div
+		<span
 			ref={input}
 			data-guid={id}
 			tabIndex={tabIndex}
-			contentEditable={hasFocus}
-			onClick={giveFocus}
+			contentEditable={true}
+			/*contentEditable={hasFocus}*/
 			onFocus={giveFocus}
 			onBlur={removeFocus}
 			className={classes.join(' ')}

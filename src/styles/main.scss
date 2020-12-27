@@ -3,8 +3,7 @@
 @tailwind utilities;
 
 .text-editor {
-	display: flex;
-	div:last-child {
+	span:last-child {
 			background-color: #f0f;
 			min-width: 1000px;
 		}

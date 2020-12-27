@@ -30802,7 +30802,8 @@ function Editor() {
     }); // event listener end
   }, []);
   return /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("p", null, "Bold: ", String(modifier.cur.bold)), /*#__PURE__*/_react.default.createElement("p", null, "Italic: ", String(modifier.cur.italic))), /*#__PURE__*/_react.default.createElement("div", {
-    className: "text-editor"
+    contentEditable: true,
+    className: "flex text-editor"
   }, lines));
 }
 
@@ -30819,7 +30820,12 @@ function EditorInput(_ref2) {
       setFocus = _useState6[1];
 
   (0, _react.useEffect)(function () {
-    if (input) input.current.focus();
+    if (input) {
+      console.log('focusing');
+      setTimeout(function () {
+        input.current.focus();
+      }, 0);
+    }
   }, [input]);
 
   var giveFocus = function giveFocus() {
@@ -30833,12 +30839,13 @@ function EditorInput(_ref2) {
   var classes = "inline h-5 py-8 pt-4  border focus:ring-2 focus:ring-blue-600".split(' ');
   if (bold) classes.push('font-bold');
   if (italic) classes.push('italic');
-  return /*#__PURE__*/_react.default.createElement("div", {
+  return /*#__PURE__*/_react.default.createElement("span", {
     ref: input,
     "data-guid": id,
     tabIndex: tabIndex,
-    contentEditable: hasFocus,
-    onClick: giveFocus,
+    contentEditable: true
+    /*contentEditable={hasFocus}*/
+    ,
     onFocus: giveFocus,
     onBlur: removeFocus,
     className: classes.join(' ')
@@ -30874,7 +30881,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "34497" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "39591" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

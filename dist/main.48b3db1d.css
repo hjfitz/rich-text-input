@@ -31168,11 +31168,7 @@ video {
           animation: bounce 1s infinite;
 }
 
-.text-editor {
-  display: flex;
-}
-
-.text-editor div:last-child {
+.text-editor span:last-child {
   background-color: #f0f;
   min-width: 1000px;
 }
