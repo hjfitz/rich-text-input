@@ -29772,44 +29772,74 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"app/index.v3.jsx":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"app/util.jsx":[function(require,module,exports) {
 "use strict";
 
-var _react = _interopRequireWildcard(require("react"));
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.getSelectedIndexes = getSelectedIndexes;
+exports.getCaretPos = getCaretPos;
+exports.setCaretPos = setCaretPos;
+exports.parseNodesToDOMTreeString = parseNodesToDOMTreeString;
+exports.EventEmitter = void 0;
 
-var _reactDom = require("react-dom");
+var _react = _interopRequireDefault(require("react"));
 
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
 function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function getSelectedIndexes(el) {
+  var selection = document.getSelection();
 
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+  var _selection$getRangeAt = selection.getRangeAt(0),
+      startContainer = _selection$getRangeAt.startContainer,
+      endContainer = _selection$getRangeAt.endContainer;
 
-var entry = document.getElementById('react-root');
+  var start = _toConsumableArray(el.childNodes).indexOf(startContainer);
+
+  var end = _toConsumableArray(el.childNodes).indexOf(endContainer);
+
+  return {
+    start: start,
+    end: end
+  };
+}
+
+function getCaretPos(el) {
+  var selection = document.getSelection();
+
+  var _range = selection.getRangeAt(0);
+
+  var range = _range.cloneRange();
+
+  range.selectNodeContents(el);
+  range.setEnd(_range.endContainer, _range.endOffset);
+  var len = range.toString().length;
+  return len;
+}
+
+function setCaretPos(el, idx) {
+  el.focus();
+  document.getSelection().collapse(el, idx);
+}
 
 function parseNodesToDOMTreeString(nodes) {
   return nodes.reduce(function (acc, cur) {
@@ -29845,6 +29875,93 @@ function parseNodesToDOMTreeString(nodes) {
   });
 }
 
+var EventEmitter = /*#__PURE__*/function () {
+  function EventEmitter() {
+    _classCallCheck(this, EventEmitter);
+
+    this.events = {};
+  }
+
+  _createClass(EventEmitter, [{
+    key: "add",
+    value: function add(event, callback) {
+      var once = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+      var cb = {
+        callback: callback,
+        once: once
+      };
+      if (this.events[event]) this.events[event].push(cb);else this.events[event] = [cb];
+    }
+  }, {
+    key: "on",
+    value: function on(event, callback) {
+      this.add(event, callback);
+    }
+  }, {
+    key: "once",
+    value: function once(event, callback) {
+      this.add(event, callback, true);
+    }
+  }, {
+    key: "emit",
+    value: function emit(event, data) {
+      var stack = this.events[event];
+      if (!stack) return;
+      stack.forEach(function (_ref) {
+        var callback = _ref.callback;
+        return callback(data);
+      });
+      this.events[event] = stack.filter(function (cb) {
+        return cb.once;
+      });
+    }
+  }]);
+
+  return EventEmitter;
+}();
+
+exports.EventEmitter = EventEmitter;
+},{"react":"../node_modules/react/index.js"}],"app/index.v3.jsx":[function(require,module,exports) {
+"use strict";
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _reactDom = require("react-dom");
+
+var _util = require("./util");
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var entry = document.getElementById('react-root');
+
 function App() {
   // ref to main input
   var editor = (0, _react.useRef)(null); // nodes to render - chars, with their input type (pending,setPending)
@@ -29853,8 +29970,7 @@ function App() {
   var _useState = (0, _react.useState)([]),
       _useState2 = _slicedToArray(_useState, 2),
       nodes = _useState2[0],
-      setNodes = _useState2[1]; // whether to 
-
+      setNodes = _useState2[1];
 
   var _useState3 = (0, _react.useState)({
     bold: false,
@@ -29864,6 +29980,17 @@ function App() {
       _useState4 = _slicedToArray(_useState3, 2),
       pending = _useState4[0],
       setPending = _useState4[1];
+
+  var _useState5 = (0, _react.useState)(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      debug = _useState6[0],
+      setDebug = _useState6[1];
+
+  var toggleDebug = function toggleDebug() {
+    return setDebug(function (dbg) {
+      return !dbg;
+    });
+  };
 
   function handleModifiers(ev) {
     var selector = {
@@ -29877,30 +30004,42 @@ function App() {
     });
   }
 
-  function getCaretPos() {
-    var selection = document.getSelection();
-    if (selection.type !== "Caret") return;
+  function deleteChar() {
+    var _document$getSelectio = document.getSelection(),
+        type = _document$getSelectio.type;
 
-    var _range = selection.getRangeAt(0);
+    if (type === 'Range') {
+      var _getSelectedIndexes = (0, _util.getSelectedIndexes)(editor.current),
+          start = _getSelectedIndexes.start,
+          end = _getSelectedIndexes.end;
 
-    var range = _range.cloneRange();
+      setNodes(function (nodes) {
+        nodes.splice(start, end - start + 1); //document.getSelection().removeAllRanges()
 
-    range.selectNodeContents(editor.current);
-    range.setEnd(_range.endContainer, _range.endOffset);
-    var len = range.toString().length;
-    return len;
-  }
+        return _toConsumableArray(nodes);
+      });
+    }
 
-  function setCaretPos(idx) {
-    editor.current.focus();
-    document.getSelection().collapse(editor.current, idx);
+    if (type === 'Caret') {
+      var pos = (0, _util.getCaretPos)(editor.current);
+      var nodeIndex = pos - 1; // useEffect[nodes] incs by 1 so reduce by 1 again
+
+      var newPos = pos - 2;
+      setNodes(function (nodes) {
+        nodes.splice(nodeIndex, 1);
+        if (newPos >= 0) (0, _util.setCaretPos)(editor.current, newPos);else (0, _util.setCaretPos)(editor.current, 0);
+        return _toConsumableArray(nodes);
+      });
+    }
   }
 
   function onInput(ev) {
     ev.preventDefault();
     if (ev.ctrlKey) return handleModifiers(ev);
+    if (ev.key === 'Backspace') deleteChar();
+    if (ev.key.indexOf('Arrow') === 0) handleCaretMovement(ev.key);
     if (ev.key.length > 1) return;
-    var pos = getCaretPos();
+    var pos = (0, _util.getCaretPos)(editor.current);
     setNodes(function (nodes) {
       nodes.splice(pos, 0, {
         char: ev.key,
@@ -29910,24 +30049,44 @@ function App() {
     });
   }
 
+  function handleCaretMovement(key) {
+    var el = editor.current;
+    var pos = (0, _util.getCaretPos)(el);
+    if (key === 'ArrowLeft' && pos !== 0) (0, _util.setCaretPos)(el, pos - 1);else if (key === 'ArrowRight' && pos < nodes.length) (0, _util.setCaretPos)(el, pos + 1);
+  } // find where we've clicked, get the node before
+  // update modifier state
+
+
+  function updateModifiersPerCaret() {
+    var pos = (0, _util.getCaretPos)(editor.current);
+    var node = nodes[pos - 1];
+    if (!node) return;
+    setPending(_objectSpread({}, node.modifiers));
+  }
+
   (0, _react.useEffect)(function () {
     if (!nodes.length) return;
-    var pos = getCaretPos();
-    setCaretPos(pos + 1);
+    var pos = (0, _util.getCaretPos)(editor.current);
+    if (pos >= nodes.length) return;
+    var newPos = pos + 1;
+    (0, _util.setCaretPos)(editor.current, newPos);
   }, [nodes]);
-  return /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement("h1", null, "App"), /*#__PURE__*/_react.default.createElement("div", {
+  return /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement("h1", null, "App"), /*#__PURE__*/_react.default.createElement("button", {
+    onClick: toggleDebug
+  }, "Debug"), /*#__PURE__*/_react.default.createElement("div", {
     ref: editor,
     className: "block h-5 py-8 pt-4 border focus:ring-2 focus:ring-blue-600",
     onKeyDown: onInput,
+    onClick: updateModifiersPerCaret,
     contentEditable: true,
     suppressContentEditableWarning: true
-  }, parseNodesToDOMTreeString(nodes)), /*#__PURE__*/_react.default.createElement("div", {
+  }, (0, _util.parseNodesToDOMTreeString)(nodes)), debug && /*#__PURE__*/_react.default.createElement("div", {
     className: "block h-24 mt-12 border-2 border-dashed"
-  }, JSON.stringify(nodes)), /*#__PURE__*/_react.default.createElement("div", null, parseNodesToDOMTreeString(nodes)));
+  }, JSON.stringify(nodes)));
 }
 
 (0, _reactDom.render)( /*#__PURE__*/_react.default.createElement(App, null), entry);
-},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-dom":"../node_modules/react-dom/index.js","./util":"app/util.jsx"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -29955,7 +30114,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "36059" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "44073" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
